@@ -1,0 +1,96 @@
+scrape_interval_minutes: 60
+retention_days: 14
+
+sources:
+  # --- Ride Reports & Routes ---
+  - name: ADVRider
+    url: https://www.advrider.com/feed/
+    enabled: true
+
+  - name: Adventure Rider Radio
+    url: https://www.adventureriderradio.com/feed/
+    enabled: true
+
+
+  # --- Industry News & New Models ---
+  - name: Motorcyclist Online
+    url: https://www.motorcyclistonline.com/rss/all
+    enabled: true
+
+  - name: Cycle World
+    url: https://www.cycleworld.com/rss/all/
+    enabled: true
+
+  - name: Motorcycle Daily
+    url: https://www.motorcycledaily.com/feed/
+    enabled: true
+
+  - name: Ultimate Motorcycling
+    url: https://ultimatemotorcycling.com/feed/
+    enabled: true
+
+  - name: Ride Apart
+    url: https://www.rideapart.com/rss/articles/all
+    enabled: true
+
+  - name: Motorcycle News
+    url: https://www.motorcyclenews.com/rss/
+    enabled: true
+
+  - name: ADV Pulse
+    url: https://advpulse.com/feed/
+    enabled: true
+
+  - name: Bennetts BikeSocial
+    url: https://www.bennetts.co.uk/bikesocial/feed
+    enabled: true
+
+  - name: Adventure Bike Rider
+    url: https://www.adventurebikerider.com/feed
+    enabled: true
+  
+  - name: Bike EXIF
+    url: https://www.bikeexif.com/feed
+    enabled: true
+
+  # --- Gear Reviews ---
+  - name: WebBikeWorld
+    url: https://www.webbikeworld.com/feed/
+    enabled: true
+
+  - name: Wired2Ride
+    url: https://wired2ride.com/feed/
+    enabled: true
+
+  # --- YouTube Channels ---
+  # Feed format: https://www.youtube.com/feeds/videos.xml?channel_id=CHANNEL_ID
+
+  - name: Big Rock Moto
+    url: https://www.youtube.com/feeds/videos.xml?channel_id=UCYeaheuGXIv0UhpSBfPiJiA
+    type: youtube
+    enabled: true
+
+  - name: ARiemann1 (Motology Films)
+    url: https://www.youtube.com/feeds/videos.xml?channel_id=UCY3mZIqfQh71JZBiWTQ3I7A
+    type: youtube
+    enabled: true
+
+  - name: Motorcycle Adventure Dirtbike TV
+    url: https://www.youtube.com/feeds/videos.xml?channel_id=UCHCgMd5ICEW6pHpfR69UrwA
+    type: youtube
+    enabled: true
+
+  - name: Itchy Boots
+    url: https://www.youtube.com/feeds/videos.xml?channel_id=UCEIs9nkveW9WmYtsOcJBwTg
+    type: youtube
+    enabled: true
+
+  - name: FortNine
+    url: https://www.youtube.com/feeds/videos.xml?channel_id=UCNSMdQtn1SuFzCZjfK2C7dQ
+    type: youtube
+    enabled: true
+
+  - name: Bennetts BikeSocial
+    url: https://www.youtube.com/feeds/videos.xml?channel_id=UC4VvtE5R4wltC1ZcrR15Cpg
+    type: youtube
+    enabled: true

@@ -1,0 +1,64 @@
+services:
+
+  # ── Scraper: runs on a schedule, writes to SQLite ──────────────────────────
+  scraper:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: moto-scraper
+    restart: unless-stopped
+    command: python scraper.py
+    env_file: .env
+    environment:
+      - TZ=Europe/Tallinn
+      - CONFIG_PATH=/config/sources.yaml
+      - DB_PATH=/data/articles.db
+    volumes:
+      - article_data:/data
+      - ./sources.yaml:/config/sources.yaml:ro
+    depends_on: []
+
+  # ── API: FastAPI serving articles from SQLite ──────────────────────────────
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: moto-api
+    restart: unless-stopped
+    command: uvicorn api:app --host 0.0.0.0 --port 6060
+    env_file: .env
+    environment:
+      - TZ=Europe/Tallinn
+      - DB_PATH=/data/articles.db
+    volumes:
+      - article_data:/data
+    expose:
+      - "8000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6060/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  # ── Frontend: Nginx serving the built React app + proxying /api ────────────
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: moto-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      api:
+        condition: service_healthy
+
+volumes:
+  article_data:
+    # On cloud VMs, you can swap this for a bind mount to a persistent disk:
+    # driver: local
+    # driver_opts:
+    #   type: none
+    #   device: /mnt/data/moto-articles
+    #   o: bind
