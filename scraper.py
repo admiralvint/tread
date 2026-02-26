@@ -158,6 +158,37 @@ DAILY_REQUEST_LIMIT = 1000
 RATE_LIMIT_RPM = 12
 
 # ---------------------------------------------------------------------------
+# Content quality
+# ---------------------------------------------------------------------------
+
+GARBAGE_PHRASES = [
+    "cookie consent", "we use cookies", "accept cookies", "cookie policy",
+    "privacy settings", "consent management", "cookie settings",
+    "please enable javascript", "enable cookies to continue",
+    "this site uses cookies", "gdpr", "your privacy choices",
+    # German
+    "datenschutz", "datenschutzerklärung", "cookie-einstellungen",
+    "zustimmen", "einwilligung",
+    # French
+    "politique de confidentialité", "paramètres des cookies",
+    # Generic bot/block pages
+    "access denied", "403 forbidden", "just a moment",
+    "checking your browser", "cloudflare", "enable javascript",
+    "you have been blocked",
+]
+
+MIN_CONTENT_LENGTH = 150
+
+
+def is_garbage_content(content: str) -> bool:
+    """Return True if the content looks like a cookie wall, block page, or is too short."""
+    if not content or len(content.strip()) < MIN_CONTENT_LENGTH:
+        return True
+    text = content.lower()
+    hits = sum(1 for phrase in GARBAGE_PHRASES if phrase in text)
+    return hits >= 2
+
+# ---------------------------------------------------------------------------
 # Database helpers
 # ---------------------------------------------------------------------------
 
@@ -399,13 +430,16 @@ async def fetch_rss_feed_async(
                     for entry in feed.entries[:10]:
                         if source_type == "youtube":
                             content = extract_youtube_content(entry)
+                            rss_summary = content
                         else:
-                            content = entry.get("summary", "")[:5000]
+                            rss_summary = entry.get("summary", "")[:5000]
+                            content = rss_summary
                         articles.append({
                             "source": source["name"],
                             "title": entry.get("title", "No title"),
                             "url": entry.get("link", ""),
                             "content": content,
+                            "rss_summary": rss_summary,
                             "image_url": extract_image_url(entry, source_type),
                             "is_video": source_type == "youtube",
                         })
@@ -513,15 +547,40 @@ def run_scrape_cycle(config: dict) -> None:
 
     with get_db() as conn:
         for article in all_articles:
+            rss_summary = article.get("rss_summary", "")
             needs_full_fetch = not article["content"] or len(article["content"]) < 400
             has_image = bool(article.get("image_url"))
 
             if needs_full_fetch or not has_image:
                 full_content, og_image = fetch_article_content(article["url"])
-                if full_content and needs_full_fetch:
-                    article["content"] = full_content
+
+                if full_content and not is_garbage_content(full_content):
+                    if needs_full_fetch:
+                        article["content"] = full_content
+                elif needs_full_fetch:
+                    # Full fetch failed or returned garbage — fall back to RSS summary
+                    if rss_summary and not is_garbage_content(rss_summary):
+                        logger.info(
+                            "Full fetch garbage/failed for '%s', using RSS summary fallback",
+                            article["title"][:50],
+                        )
+                        article["content"] = rss_summary
+                    else:
+                        logger.warning(
+                            "Skipping article with no usable content: '%s'",
+                            article["title"][:50],
+                        )
+                        continue
+
                 if og_image and not has_image:
                     article["image_url"] = og_image
+
+            # Final garbage check on whatever content we ended up with
+            if is_garbage_content(article.get("content", "")):
+                logger.warning(
+                    "Skipping garbage content: '%s'", article["title"][:50]
+                )
+                continue
 
             article_id = save_article(
                 conn,

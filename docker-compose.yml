@@ -1,6 +1,4 @@
 services:
-
-  # ── Scraper: runs on a schedule, writes to SQLite ──────────────────────────
   scraper:
     build:
       context: .
@@ -16,9 +14,12 @@ services:
     volumes:
       - article_data:/data
       - ./sources.yaml:/config/sources.yaml:ro
-    depends_on: []
+    networks:
+      - backend
+    # Hardening: Prevent container from gaining new privileges
+    security_opt:
+      - no-new-privileges:true
 
-  # ── API: FastAPI serving articles from SQLite ──────────────────────────────
   api:
     build:
       context: .
@@ -33,32 +34,108 @@ services:
     volumes:
       - article_data:/data
     expose:
-      - "8000"
+      - "6060"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:6060/health"]
       interval: 30s
       timeout: 5s
       retries: 3
       start_period: 10s
+    networks:
+      - backend
+    security_opt:
+      - no-new-privileges:true
 
-  # ── Frontend: Nginx serving the built React app + proxying /api ────────────
   frontend:
     build:
       context: .
       dockerfile: Dockerfile.frontend
     container_name: moto-frontend
     restart: unless-stopped
-    ports:
-      - "80:80"
+    # This command injects 'server_tokens off' into the default config before starting Nginx
+    command: >
+      sh -c "sed -i 's/http {/http {\n    server_tokens off;/' /etc/nginx/nginx.conf 2>/dev/null || 
+             sed -i '/server {/a \    server_tokens off;' /etc/nginx/conf.d/default.conf && 
+             nginx -g 'daemon off;'"
+    expose:
+      - "80"
     depends_on:
       api:
         condition: service_healthy
+    networks:
+      - frontend_net
+      - backend
+    security_opt:
+      - no-new-privileges:true
+
+  caddy:
+    image: caddy:2.7-alpine
+    container_name: countersteer-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - frontend
+      - umami
+    networks:
+      - frontend_net
+    security_opt:
+      - no-new-privileges:true
+
+  umami_db:
+    image: postgres:15-alpine
+    container_name: umami-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=umami
+      - POSTGRES_USER=umami
+      - POSTGRES_PASSWORD=${UMAMI_DB_PASSWORD:-umamipassword}
+    volumes:
+      - umami_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U umami"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - umami_net
+    security_opt:
+      - no-new-privileges:true
+
+  umami:
+    image: ghcr.io/umami-software/umami:postgresql-latest
+    container_name: umami
+    restart: unless-stopped
+    expose:
+      - "3000"
+    environment:
+      - DATABASE_URL=postgresql://umami:${UMAMI_DB_PASSWORD:-umamipassword}@umami_db:5432/umami
+      - APP_SECRET=${UMAMI_APP_SECRET}
+    depends_on:
+      umami_db:
+        condition: service_healthy
+    networks:
+      - frontend_net
+      - umami_net
+    security_opt:
+      - no-new-privileges:true
+
+networks:
+  # Caddy and the Web entrypoints
+  frontend_net:
+  # API, Scraper, and App Logic
+  backend:
+  # Isolated database network
+  umami_net:
 
 volumes:
   article_data:
-    # On cloud VMs, you can swap this for a bind mount to a persistent disk:
-    # driver: local
-    # driver_opts:
-    #   type: none
-    #   device: /mnt/data/moto-articles
-    #   o: bind
+  caddy_data:
+  caddy_config:
+  umami_db_data:

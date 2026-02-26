@@ -1,0 +1,25 @@
+countersteer.cc, www.countersteer.cc {
+	# 1. Force the headers at the very top of the block
+	header {
+		# This ERASES the "server" header from Nginx
+		-Server
+		Server "Caddy"
+		# Security headers
+		X-Frame-Options "DENY"
+		X-Content-Type-Options "nosniff"
+		Strict-Transport-Security "max-age=31536000;"
+		X-XSS-Protection "1; mode=block"
+	}
+
+	# 2. Proxy to your frontend
+	reverse_proxy moto-frontend:80
+}
+
+analytics.countersteer.cc {
+    # It's good practice to add the eraser here too
+    header {
+        -Server
+        Server "Caddy"
+    }
+    reverse_proxy umami:3000
+}
