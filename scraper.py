@@ -50,36 +50,100 @@ DB_PATH = Path(os.getenv("DB_PATH", BASE_DIR / "data" / "articles.db"))
 # ---------------------------------------------------------------------------
 
 CATEGORIES: dict[str, dict] = {
+    "Adventure Riding": {
+        "keywords": [
+            "adventure bike", "adventure riding", "adv riding", "dual sport",
+            "off-road", "gravel road", "dirt road", "trail riding", "enduro",
+            "adventure motorcycle", "tenere", "ktm adventure",
+            "adventure route", "forest road", "fire road",
+            "backcountry", "mountain pass", "gravel riding",
+        ],
+        "sources": ["ADVRider", "Adventure Rider Radio", "ADV Pulse",
+                    "Adventure Bike Rider", "Motorcycle Adventure Dirtbike TV"],
+    },
+    "Overland & Expeditions": {
+        "keywords": [
+            "overland", "overlanding", "expedition", "long distance",
+            "round the world", "rtw", "trans", "crossing continents",
+            "silk road", "pan-american", "multi-day tour", "border crossing",
+            "wild camping", "off the beaten path", "remote destination",
+            "moto camping", "motorcycle tour", "bikepacking",
+        ],
+        "sources": ["Itchy Boots", "ARiemann1 (Motology Films)"],
+    },
     "Ride Reports": {
         "keywords": [
-            "ride report", "trip report", "route", "journey", "trail", "track",
-            "overland", "overlanding", "expedition", "tour", "touring", "adventure ride",
-            "day ride", "road trip", "miles", "kilometres", "pass", "mountain pass",
-            "gravel road", "dirt road", "off-road", "backcountry",
+            "ride report", "trip report", "day ride", "road trip", "route report",
+            "canyon run", "weekend ride", "morning ride", "spirited ride", "group ride",
+            "sunday ride", "moto meetup", "twisties", "favourite road",
         ],
-        "sources": ["ADVRider", "Adventure Rider Radio", "Twisted Throttle Blog"],
+        "sources": [],
+    },
+    "New Models": {
+        "keywords": [
+            "new model", "new bike", "officially revealed", "unveiled", "world debut",
+            "spy shot", "leaked", "concept bike", "prototype", "msrp", "pricing announced",
+            "order books open", "specs confirmed", "first ride review", "launch event",
+        ],
+        "sources": [],
+    },
+    "Racing": {
+        "keywords": [
+            "motogp", "moto2", "moto3", "wsbk", "world superbike", "supersport",
+            "isle of man tt", "tt race", "dakar", "rally raid", "erzbergrodeo",
+            "supercross", "motocross", "enduro gp", "racing championship",
+            "grand prix", "race result", "qualifying", "podium", "pole position",
+            "lap record", "race win", "championship standings", "marc marquez",
+            "pecco bagnaia", "jorge martin", "toprak", "jonathan rea",
+            "race team", "race bike", "factory team", "wildcard",
+        ],
+        "sources": [],
     },
     "Industry News": {
         "keywords": [
-            "new model", "launch", "revealed", "announced", "debut", "first look",
-            "bmw gs", "honda africa twin", "ktm adventure", "triumph tiger",
-            "yamaha tenere", "ducati multistrada", "royal enfield himalayan",
-            "husqvarna", "benelli", "cfmoto", "recall", "msrp", "price",
-            "2025", "2026", "model year",
+            "recall", "safety notice", "nhtsa", "sales figures", "market share",
+            "factory", "production halt", "bankruptcy", "acquisition",
+            "electric motorcycle", "ev range", "battery", "emissions regulation",
+            "import tariff", "import duty", "industry report",
         ],
-        "sources": ["Motorcyclist Online", "Cycle World", "Motorcycle Daily",
-                    "Ultimate Motorcycling", "Ride Apart", "Motorcycle News"],
+        "sources": [],
     },
     "Gear Reviews": {
         "keywords": [
-            "helmet", "jacket", "gloves", "boots", "pants", "suit", "luggage",
-            "top case", "panniers", "tank bag", "gps", "navigation", "intercom",
-            "communication", "tires", "tyres", "chain", "sprocket", "suspension",
-            "protection", "armour", "armor", "review", "tested", "rating", "rated",
-            "gore-tex", "waterproof", "ce certified", "airbag",
+            "helmet", "jacket", "gloves", "boots", "pants", "riding suit", "luggage",
+            "top case", "panniers", "tank bag", "gps", "intercom",
+            "tires", "tyres", "armour", "armor", "gear review", "gear tested",
+            "gore-tex", "waterproof", "ce certified", "airbag vest",
+            "heated gear", "rain gear",
         ],
-        "sources": ["WebBikeWorld", "Revzilla", "Cycle Gear Blog", "Wired2Ride",
-                    "Bennetts BikeSocial"],
+        "sources": ["WebBikeWorld", "Wired2Ride"],
+    },
+    "Custom & Culture": {
+        "keywords": [
+            "custom build", "custom motorcycle", "cafe racer", "scrambler build",
+            "bobber", "chopper", "tracker", "brat style", "restomod", "restoration",
+            "one-off", "bespoke", "handbuilt", "fabricated", "show bike",
+            "motorcycle art", "vintage motorcycle", "classic motorcycle",
+        ],
+        "sources": ["Bike EXIF", "Return of the Cafe Racers", "Pipeburn"],
+    },
+    "Street & Sport": {
+        "keywords": [
+            "naked bike", "streetfighter", "sport bike", "supersport", "superbike",
+            "sport touring", "faired motorcycle", "commuter", "urban riding",
+            "city riding", "sport riding", "canyon carving", "lap time", "lean angle",
+        ],
+        "sources": [],
+    },
+    "How-To & Tech": {
+        "keywords": [
+            "how to", "diy", "tutorial", "step by step", "tips and tricks",
+            "maintenance", "oil change", "valve clearance", "chain lube",
+            "suspension setup", "sag setting", "modification", "upgrade guide",
+            "troubleshoot", "repair guide", "tyre change", "tire change",
+            "brake bleed", "coolant flush",
+        ],
+        "sources": [],
     },
 }
 

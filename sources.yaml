@@ -53,6 +53,14 @@ sources:
     url: https://www.bikeexif.com/feed
     enabled: true
 
+  - name: More Bikes
+    url: https://www.morebikes.co.uk/feed/
+    enabled: true
+
+  - name: Visordown
+    url: https://www.visordown.com/feed
+    enabled: true
+
   # --- Gear Reviews ---
   - name: WebBikeWorld
     url: https://www.webbikeworld.com/feed/
@@ -93,4 +101,33 @@ sources:
   - name: Bennetts BikeSocial
     url: https://www.youtube.com/feeds/videos.xml?channel_id=UC4VvtE5R4wltC1ZcrR15Cpg
     type: youtube
+    enabled: true
+
+  - name: Bike Shed Moto Co
+    url: https://www.youtube.com/feeds/videos.xml?channel_id=UCHg3ZUnUPSSFSbYWP2KU7VQ
+    type: youtube
+    enabled: true
+
+  - name: Revzilla
+    url: https://www.youtube.com/feeds/videos.xml?channel_id=UCLQZTXj_AnL7fDC8sLrTGMw
+    type: youtube
+    enabled: true
+
+    # --- Street / Custom / Culture ---
+  - name: Return of the Cafe Racers
+    url: https://www.returnofthecaferacers.com/feed
+    enabled: true
+
+  - name: Pipeburn
+    url: https://pipeburn.com/feed
+    enabled: true
+
+  # --- Broader Industry / Street ---
+  - name: Total Motorcycle
+    url: https://www.totalmotorcycle.com/feed
+    enabled: true
+
+  # --- Australian / Street News ---
+  - name: MCNews Australia
+    url: https://mcnews.com.au/feed
     enabled: true
