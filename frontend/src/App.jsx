@@ -581,11 +581,13 @@ export default function App() {
       <header className="header">
         <div className="header-inner">
           <div className="logo">
-            <span className="logo-icon">◈</span>
-            <div>
-              <span className="logo-title">TREAD</span>
-              <span className="logo-sub">Adventure Moto News</span>
-            </div>
+            <a href="/" className="logo-link">
+              <span className="logo-icon">⟲</span>
+              <div>
+                <span className="logo-title">COUNTERSTEER</span>
+                <span className="logo-sub">Moto News · Aggregated & Summarized</span>
+              </div>
+            </a>
           </div>
           <div className="header-right">
             <StatsBar stats={stats} />
@@ -637,7 +639,17 @@ export default function App() {
       </main>
 
       <footer className="footer">
-        <p>TREAD · Aggregated adventure moto news · AI-summarized via Gemini</p>
+        <div className="footer-inner">
+          <p className="footer-copy">© countersteer.cc · Moto news aggregated &amp; summarized by AI · Not affiliated with any manufacturer</p>
+          <a
+            href="https://buymeacoffee.com/admiralvint"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bmc-btn"
+          >
+            ☕ Buy me a coffee
+          </a>
+        </div>
       </footer>
     </>
   );

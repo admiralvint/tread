@@ -113,6 +113,11 @@ sources:
     type: youtube
     enabled: true
 
+  - name: Brake Magazine
+    url: https://www.youtube.com/feeds/videos.xml?channel_id=UC4GIo-eOhll0ZvEEcFfYnmQ
+    type: youtube
+    enabled: true  
+
     # --- Street / Custom / Culture ---
   - name: Return of the Cafe Racers
     url: https://www.returnofthecaferacers.com/feed
